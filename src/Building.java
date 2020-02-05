@@ -1,12 +1,14 @@
 import java.util.List;
 
 public class Building {
-    int noLifts;
+    int noElevators;
     int noFloors;
-    boolean goingUp;
-    boolean idle;
-    public int currentFloor;
-    public List<Integer> nextFloor;
+    List <Elevator> elevators;
+    
 
 
- 
+    // boolean goingUp;
+    // boolean idle;
+    // public int currentFloor;
+    // public List<Integer> nextFloor;
+}

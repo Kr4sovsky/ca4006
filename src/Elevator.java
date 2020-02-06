@@ -1,15 +1,16 @@
 import java.util.List;
-
+import java.util.ArrayList;
 public class Elevator {
 
+    int id;
     int capacity;
     int currentLoad;
-    // if goingUp is false then lift direction is down
-    boolean goingUp;
+    // if isGoingUp is false then lift direction is down
+    boolean isGoingUp;
     boolean idle;
     public int currentFloor;
     // nextFloor will contain a list of stops to be made next
-    public List <Integer> nextFloors;
+    public List <Integer> nextFloors = new ArrayList<>();
 
     
 
@@ -20,16 +21,19 @@ public class Elevator {
         this.capacity = capacity;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
     public void setIdle(boolean idle) {
         // Initially True
         this.idle = idle;
         this.nextFloors.add(0);
     }
 
-    public void setDirection(boolean goingUp) {
+    public void setIsGoingUp(boolean isGoingUp) {
         // Initially null
         if (!isIdle()) {
-            this.goingUp = goingUp;
+            this.isGoingUp = isGoingUp;
         }
     }
 
@@ -47,7 +51,7 @@ public class Elevator {
 
     public boolean getDirection() {
         // Return Elevator Direction
-        return this.goingUp;
+        return this.isGoingUp;
     }
 
     public int getTotalCapacity() {
@@ -93,5 +97,40 @@ public class Elevator {
         // if not in nextFloor append new floor
         // this.nextFloor.add(floor);
     }
+
+    void addElevatorCall(Person person) {
+        isGoingUp = person.isGoingUp;
+        callFloor = person.callFloor;
+
+        // do something;
+
+
+
+        pickUpMap.get(callFLoor).add(person);
+    }
+
+    void addFloorRequest(Person person) {
+        destFloor = person.destFloor;
+        weight = person.weight;
+        this.availableCapacity = this.availableCapacity - weight;
+        this.dropOffMap.get(person.destFloor).add(person);
+    }
+
+    void stopAtTheFloor() {
+        List<Person> dropOff = dropOffMap.get(currFloor);
+        List<Person> pickUp = pickUpMap.get(currFloor);
+        if (dropOff.size() == 0 && pickUp.size() == 0) {
+            setElevatorIdle();
+            return;
+        }
+        for (Person person : dropOff) {
+            this.availableCapacity = this.availableCapacity + person.weight;
+        }
+        for (Person person : pickUp) {
+            this.availableCapacity = this.availableCapacity - person.weight;
+        }
+    }
+
+
 }
 

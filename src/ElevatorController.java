@@ -40,10 +40,16 @@ public class ElevatorController {
             
         }
 
+    }
+
+    Elevator findBestElevator(Person person) {
+        bestElevator = null;
+        for (Elevator elevator : this.elevators) {
+            // if something {
+            //     bestElevator = elevator;
+            // }
         }
+        return bestElevator;
+    }
 
 }
-
-// elevator_1 = [curr, next, last, load ]
-// elevator_2 = [curr, next, last, load ]
-// elevator_3 = [curr, next, last, load ]

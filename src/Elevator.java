@@ -38,6 +38,7 @@ public class Elevator {
     public void setIdle(boolean idle) {
         // Initially True
         this.idle = idle;
+        this.isGoingUp = false;
         this.nextFloors.add(0);
     }
 
@@ -105,12 +106,7 @@ public class Elevator {
 
         // do something;
         pickUpMap.get(person.callFloor).add(person);
-        if (!isGoingUp && isIdle()) {
-            if (nextFloors.size() == 1) {
-                setIdle(false);
-                moveFloor();
-            }
-        }
+
     }
 
 
@@ -153,6 +149,7 @@ public class Elevator {
             Thread.sleep(500);
         }
         
+        
     }
 
     // TODO - add complexity by introducing unexpected scenarios (wrong button pressed)
@@ -183,7 +180,7 @@ public class Elevator {
         for (Person person : dropOff) {
             dropOff(person);
         }
-        dropOffMap.remove(currentFloor);
+        dropOffMap.remove(currentFloor); 
         
         for (Person person : pickUp) {
             pickUp(person);
@@ -192,12 +189,20 @@ public class Elevator {
 
         this.nextFloors = nextFloors.subList(1, nextFloors.size());
         if (dropOff.size() == 0 && pickUp.size() == 0) {
-            if (nextFloors.size() == 0) {
+            if (nextFloors.size() == 0 && currentFloor != 0) {
                 this.nextFloors.add(0);
+            } else if (currentFloor == 0) {
+                setIdle(true);
             }
         }
         Thread.sleep(1000);
-        moveFloor(nextFloors.get(0));
+        // if (!isGoingUp && isIdle()) {
+        //     if (nextFloors.size() == 1) {
+        //         setIdle(true);
+        //         moveFloor();
+        //     }
+        // }
+        
     }
 
 

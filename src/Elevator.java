@@ -102,8 +102,6 @@ public class Elevator {
         // this.nextFloor.add(floor);
     }
 
-
-
     void addElevatorCall(Person person) {
         isGoingUp = person.isGoingUp;
         callFloor = person.callFloor;

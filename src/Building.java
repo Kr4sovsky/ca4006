@@ -29,6 +29,7 @@ public class Building {
             elevator.setTotalCapacity(maxElevatorLoad);
             elevator.setIdle(true);
             elevator.setIsGoingUp(false);
+            elevator.setNoFloors(noFloors);
             elevators.add(elevator);
             System.out.println();
             System.out.format("ELEVATOR %s\n", elevator.id);

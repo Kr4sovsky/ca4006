@@ -1,8 +1,11 @@
 import java.util.List;
 import java.util.ArrayList;
-public class Elevator {
+import java.util.HashMap;
+import java.util.Map;
 
+public class Elevator {
     int id;
+    int noFloors;
     int capacity;
     int currentLoad;
     // if isGoingUp is false then lift direction is down
@@ -10,9 +13,11 @@ public class Elevator {
     boolean idle;
     public int currentFloor;
     // nextFloor will contain a list of stops to be made next
-    public List <Integer> nextFloors = new ArrayList<>();
+    public List<Integer> nextFloors = new ArrayList<>();
 
-    
+    public Map<Integer, List<Person>> pickUpMap = new HashMap<>();
+    public Map<Integer, List<Person>> dropOffMap = new HashMap<>();
+        
 
 
     // SETTERS
@@ -24,6 +29,12 @@ public class Elevator {
     public void setId(int id) {
         this.id = id;
     }
+
+
+    public void setNoFloors(int noFloors) {
+        this.noFloors = noFloors;
+    }
+
     public void setIdle(boolean idle) {
         // Initially True
         this.idle = idle;
@@ -77,20 +88,45 @@ public class Elevator {
         return this.idle;
     }
 
-
     // ACTIONS
 
-    // 
+    //
 
     // public void checkQueue() {
-    //     if (this.nextFloors.length) {
-    //         return;
-    //     }
+    // if (this.nextFloors.length) {
+    // return;
+    // }
     // }
 
 
+    void addElevatorCall(Person person) {
+        boolean isGoingUp = person.isGoingUp;
+        int callFloor = person.callFloor;
+
+        // do something;
+        pickUpMap.get(person.callFloor).add(person);
+        if (!isGoingUp && isIdle()) {
+            if (nextFloors.size() == 1) {
+                setIdle(false);
+                moveFloor();
+            }
+        }
+    }
+
+
+
+    void addFloorRequest(Person person) {
+        int destinationFloor = person.destinationFloor;
+        int weight = person.weight;
+        this.currentLoad = this.currentLoad - weight;
+        this.dropOffMap.get(person.destinationFloor).add(person);
+    }
+
+    
 
     public void goToFloor(int nextFloor) {
+
+        
         Thread.sleep(2000);
         
         // Check if floor is already in this.nextFloor
@@ -102,46 +138,66 @@ public class Elevator {
         // this.nextFloor.add(floor);
     }
 
-    void addElevatorCall(Person person) {
-        isGoingUp = person.isGoingUp;
-        callFloor = person.callFloor;
-
-        // do something;
-
-
-
-        pickUpMap.get(callFLoor).add(person);
+    public void moveFloor() {
+        
+        this.isGoingUp = nextFloors.get(0) > currentFloor;
+        if (isGoingUp) {
+            this.currentFloor++;
+        } else {
+            this.currentFloor--;
+        }
+        System.out.println("MOVING TO FLOOR " + this.currentFloor);
+        if (currentFloor == nextFloors.get(0)) {
+            stopAtTheFloor();
+        } else {
+            Thread.sleep(500);
+        }
+        
     }
 
-    void addFloorRequest(Person person) {
-        destFloor = person.destFloor;
-        weight = person.weight;
-        this.availableCapacity = this.availableCapacity - weight;
-        this.dropOffMap.get(person.destFloor).add(person);
+    // TODO - add complexity by introducing unexpected scenarios (wrong button pressed)
+    void pickUp(Person person) {
+        Thread.sleep(500);
+        System.out.println("PERSON " + person.name + " HAS ENTERED THE ELEVATOR AND SELECTED FLOOR " + person.destinationFloor);
+        this.currentLoad = this.currentLoad - person.weight;
+    }
+
+    // TODO - add complexity by introducing unexpected scenarios (prick mode)
+    void dropOff(Person person) {
+        Thread.sleep(500);
+        System.out.println("PERSON " + person.name + " HAS EXITED THE ELEVATOR!");
+        this.currentLoad = this.currentLoad + person.weight;
     }
 
     void stopAtTheFloor() {
-        System.out.println("ELEVATOR " + id + "HAS STOPPED ON FLOOR №" + currFloor);
+        System.out.println("ELEVATOR " + id + "HAS STOPPED ON FLOOR №" + currentFloor);
         Thread.sleep(500);
         System.out.println("DOORS OF ELEVATOR " + id + " ARE OPENED");
-        List<Person> dropOff = dropOffMap.get(currFloor);
-        List<Person> pickUp = pickUpMap.get(currFloor);
-        if (dropOff.size() == 0 && pickUp.size() == 0) {
-            setElevatorIdle();
-            return;
-        } else if (dropOff.size() == 0) {
+        List<Person> dropOff = dropOffMap.get(currentFloor);
+        List<Person> pickUp = pickUpMap.get(currentFloor);
+        
+        if (dropOff.size() == 0) {
             System.out.println("NO DROP OFFS HAPPENED!");
         }
+        
         for (Person person : dropOff) {
-            System.out.println("PERSON " + person.name + " HAS EXITED THE ELEVATOR!");
-            Thread.sleep(1000);
-            this.availableCapacity = this.availableCapacity + person.weight;
+            dropOff(person);
         }
+        dropOffMap.remove(currentFloor);
+        
         for (Person person : pickUp) {
-            System.out.println("PERSON " + person.name + " HAS ENTERED THE ELEVATOR AND SELECTED FLOOR " + person.destinationFloor);
-            this.availableCapacity = this.availableCapacity - person.weight;
+            pickUp(person);
         }
-        Thread.sleep(1000 + );
+        pickUpMap.remove(currentFloor);
+
+        this.nextFloors = nextFloors.subList(1, nextFloors.size());
+        if (dropOff.size() == 0 && pickUp.size() == 0) {
+            if (nextFloors.size() == 0) {
+                this.nextFloors.add(0);
+            }
+        }
+        Thread.sleep(1000);
+        moveFloor(nextFloors.get(0));
     }
 
 

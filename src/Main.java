@@ -70,6 +70,9 @@ public class Main {
         
 
 
+        
+
+
 
 
         // for (int i = 0; i < numberOfElevators; i++)

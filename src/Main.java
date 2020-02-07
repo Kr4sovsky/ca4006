@@ -1,5 +1,7 @@
 import java.util.Random;
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -35,28 +37,29 @@ public class Main {
         System.out.format("and %d elevator(s)\n", building.noElevators);
         System.out.println();
 
+        // Creating 1 elevator
         building.createNewElevator();
         
-        System.out.println(building.elevators);
+        int minPersonWeight = 50;
+        int maxPersonWeight = 120;
         
-        
-        
-        Person person1 = new Person("Ronan", 0, 10);
-
-        List<Person> personList = new ArrayList(); 
-
+        List<Person> personList = new ArrayList<>(); 
         String[] names = {"Ronan", "Roland", "Ronald"};
 
+        Random rn = new Random();
         for (int i = 0;  i < totalTrips; i++) {
-            callFloor = new Random.nextInt(building.noFloors);
-            destFloor = new Random.nextInt(building.noFloors);
+            int callFloor = rn.nextInt(building.noFloors);
+            int destFloor = rn.nextInt(building.noFloors);
+            int weight = rn.nextInt(maxPersonWeight-minPersonWeight) + minPersonWeight;
             while (destFloor == callFloor) {
-                destFloor = new Random.nextInt(building.noFloors);
+                System.out.println("destFloor same as callFloor, regenerating destFloor");
+                destFloor = rn.nextInt(building.noFloors);
             }
             
-            Person person = new Person(names[i], callFloor, destFloor);
+            Person person = new Person(names[i], callFloor, destFloor, weight);
             System.out.println();
             System.out.println("PERSON NAME: "+ person.name);
+            System.out.println("PERSON WEIGHT: " + person.weight);
             System.out.println("PERSON CALL FLOOR: "+ person.callFloor);
             System.out.println("PERSON DESTINATION: " + person.destinationFloor);
             System.out.println("GOING UP: " + person.isGoingUp);

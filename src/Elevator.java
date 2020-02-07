@@ -88,7 +88,11 @@ public class Elevator {
     //     }
     // }
 
+
+
     public void goToFloor(int nextFloor) {
+        Thread.sleep(2000);
+        
         // Check if floor is already in this.nextFloor
         // if floor not in 
         for (int floor : this.nextFloors) {
@@ -97,6 +101,8 @@ public class Elevator {
         // if not in nextFloor append new floor
         // this.nextFloor.add(floor);
     }
+
+
 
     void addElevatorCall(Person person) {
         isGoingUp = person.isGoingUp;
@@ -117,18 +123,27 @@ public class Elevator {
     }
 
     void stopAtTheFloor() {
+        System.out.println("ELEVATOR " + id + "HAS STOPPED ON FLOOR №" + currFloor);
+        Thread.sleep(500);
+        System.out.println("DOORS OF ELEVATOR " + id + " ARE OPENED");
         List<Person> dropOff = dropOffMap.get(currFloor);
         List<Person> pickUp = pickUpMap.get(currFloor);
         if (dropOff.size() == 0 && pickUp.size() == 0) {
             setElevatorIdle();
             return;
+        } else if (dropOff.size() == 0) {
+            System.out.println("NO DROP OFFS HAPPENED!");
         }
         for (Person person : dropOff) {
+            System.out.println("PERSON " + person.name + " HAS EXITED THE ELEVATOR!");
+            Thread.sleep(1000);
             this.availableCapacity = this.availableCapacity + person.weight;
         }
         for (Person person : pickUp) {
+            System.out.println("PERSON " + person.name + " HAS ENTERED THE ELEVATOR AND SELECTED FLOOR " + person.destinationFloor);
             this.availableCapacity = this.availableCapacity - person.weight;
         }
+        Thread.sleep(1000 + );
     }
 
 
